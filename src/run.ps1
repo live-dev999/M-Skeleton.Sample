@@ -14,7 +14,7 @@ elseif ($IsMacOS) {
     Write-Host "Operation system - macOS" -ForegroundColor Yellow
     . ./mac-exec.ps1
 }
-elseif ($IsWindows) {
+else {
     Write-Host "Operation system - Windows" -ForegroundColor Yellow
     . ./win-exec.ps1
 }

@@ -3,7 +3,27 @@
 # Date: 04.07.2018
 # Version: 1.0
 
-#import-module 
+Write-Host ""
+Write-Host " => script for Windows" -ForegroundColor Yellow
+
+# import-modules 
+import-module "sqlps" -DisableNameChecking
+[System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.ConnectionInfo') | Out-Null
+[System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.Smo') | Out-Null
+
+# vars
+$Server = [Microsoft.SqlServer.Management.Smo.Server]::new('RemoteDefaultInstance')
+$Server.ConnectionContext.ConnectAsUser = $true
+
+$user="sa"
+$password="yourStrong(!)Password"
+$InstanceName="52.189.26.12"
+$DbName="Skeleton.Sample"
+
+$Server.ConnectionContext.ConnectAsUserName =$user
+$Server.ConnectionContext.ConnectAsUserPassword = $password
+$Server.ConnectionContext.ConnectTimeout = 30
+$Server.ConnectionContext.ServerInstance = $InstanceName
 
 # param(
 #     [string]$user,
@@ -11,6 +31,7 @@
 #     [string]$InstanceName,
 #     [string]$DbName
 # )
+
 # if($user -eq $null -or $user -eq "" -or $password -eq $null -or $password -eq "")
 # {
 #     Write-Host "Write username and password" -ForegroundColor Red
@@ -20,8 +41,7 @@
 # import-module "sqlps" -DisableNameChecking
 # [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.ConnectionInfo') | Out-Null
 # [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.Smo') | Out-Null
-# $Server = [Microsoft.SqlServer.Management.Smo.Server]::new('RemoteDefaultInstance')
-# $Server.ConnectionContext.ConnectAsUser = $true
+
 
 # #variables
 # # $steps = ([System.Management.Automation.PsParser]::Tokenize((Get-Contentt-Content "$PSScriptRoot\$($MyInvocation.MyCommand.Name)"), [ref]$null) | Where-Object { $_.Type -eq 'Command' -and $_.Content -eq 'Write-ProgressHelper' }).Count
@@ -59,10 +79,6 @@
 # $directory_dbo_Tests_DDL_Table = $directory_dbo_Tests + "\DDL Table Tests\"
 # $directory_dbo_Tests_DML = $directory_dbo_Tests + "\DML Tests\"
 
-# $Server.ConnectionContext.ConnectAsUserName =$user
-# $Server.ConnectionContext.ConnectAsUserPassword = $password
-# $Server.ConnectionContext.ConnectTimeout = 30
-# $Server.ConnectionContext.ServerInstance = $InstanceName
 
 
 
@@ -105,23 +121,23 @@
 #         # $i++
 #     }
 # }
-# function CreateDB() {   
+function CreateDB() {   
  
-#     try {        
-#         $Server.ConnectionContext.Connect()
-#         if ($Server.Databases[$DbName] -ne $null)  {$Server.Databases[$DbName].Drop()}
-#         $DB = [Microsoft.SqlServer.Management.Smo.Database]::new($InstanceName, $DbName)       
-#         $DB.Create()
-#     }
-#     catch {
-#         write-host $_.Exception.Message -ForegroundColor Red
-#         break
-#     }
-#     finally {
-#         # $Server.ConnectionContext.Close()
-#     }
-#     # Write-Progress -Activity 'Deploy' -Status 'created Db' -PercentComplete 100
-# }
+    try {        
+        $Server.ConnectionContext.Connect()
+        if ($Server.Databases[$DbName] -ne $null)  {$Server.Databases[$DbName].Drop()}
+        $DB = [Microsoft.SqlServer.Management.Smo.Database]::new($InstanceName, $DbName)       
+        $DB.Create()
+    }
+    catch {
+        write-host $_.Exception.Message -ForegroundColor Red
+        break
+    }
+    finally {
+        # $Server.ConnectionContext.Close()
+    }
+    # Write-Progress -Activity 'Deploy' -Status 'created Db' -PercentComplete 100
+}
 
 # # function Write-ProgressHelper {
 # #     param (
@@ -169,7 +185,7 @@
 
 # $scriptsCount=0
 
-# CreateDB
+CreateDB
 # SqlQuery $directory_Schemas
 # SqlQuery $directory_dbo_Tables
 # SqlQuery $directory_dbo_Usp
